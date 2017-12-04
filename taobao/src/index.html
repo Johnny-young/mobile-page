@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>移动端淘宝</title>
+	<meta name="format-detect" content="email=no,telephone=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobie-web-app-status-bar-style" content="black" />
+	<meta name="screen-orientation" content="portrait" />
+	<meta name="full-screen" content="yes" />
+	<meta name="browsermode" content="application" />
+	<meta name="x5-orientation" content="portrait" />
+	<meta name="x5-fullscreen" content="true" />
+	<meta name="x5-page-mode" content="app" />
+	<link href="./images/icon.png" rel="Shortcut Icon" type="image/x-icon">
+	<script>
+		//设置rem
+		(function(win,doc) {
+			'use strict';
+
+			var html = doc.documentElement,
+				ratio;//像素比
+
+			function setRem() {
+				var head = doc.querySelector("head");
+				var meta = doc.querySelector("meta[name='viewport']");
+
+				//判断是否是移动端
+				const ua = navigator.userAgent;
+		  		const matches = ua.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i);
+		 		const UCversion = ua.match(/U3\/((\d+|\.){5,})/i);
+		  		const isUCHd = UCversion && parseInt(UCversion[1].split('.').join(''), 10) >= 80;
+		 		const isIos = navigator.appVersion.match(/(iphone|ipad|ipod)/gi);
+		 		ratio = win.devicePixelRatio || 1;
+		  		if (!isIos && !(matches && matches[1] > 534) && !isUCHd) {
+		 	    	// 如果非iOS, 非Android4.3以上, 非UC内核, 就不执行高清, ratio设为1;
+		  	 		ratio = 1;
+		 		}
+		 		var scaleValue = (1/ratio);
+
+				//设置meta 
+				if(!meta) {
+					var meta = doc.createElement("meta");
+					meta.name = "viewport";
+					meta.content='width=device-width, initial-scale=' + scaleValue + ', minimum-scale=' + scaleValue + ',maximum-scale=' + scaleValue + ', user-scalable=no';
+					head.appendChild(meta);
+				}
+				var width = html.clientWidth;
+				html.style.fontSize = ratio == 1 ? "50px" : width/750*100 + "px";
+				doc.body.style.fontSize = 14*ratio + "px";
+			}
+
+			win.addEventListener("resize", function() {
+				tid && (clearTimeout(tid));//减少rem连续设置
+				var tid = setTimeout(setRem, 300);
+			}, false);
+
+			win.addEventListener("DOMContentLoaded", setRem, false);
+			//屏幕旋转
+			win.orientation && (win.addEventListener("orientation", setRem, false));
+
+		}(window, document));
+	</script>
+	<style>
+		/* reset */
+		html {
+			width: 100%;
+			height: 100%;
+			-webkit-text-size-adjust: 100%!important;/* 禁止自动调整大小 */
+			-webkit-user-select: none;/* 禁止选中文本 */
+			user-select: none;
+			overflow: hidden;
+		}
+	
+		body {
+			height: 100%;
+			font-size: 12px;
+			line-height: 1.5;
+			color: #333;
+			font-family: "Hevetica Neue", Hevetica, STHeiTi, sans-serif;/* 使用无衬线字体 */
+			background: #fff;
+			overflow-x: hidden;
+			-webkit-overflow-scrolling: touch;/* 开启mobile网页快速滚动与回弹的效果 */
+		}
+
+		a,img {
+			-webkit-touch-callout: none;/* 禁止长按链接与图片弹出菜单 */
+		}
+
+		button,input,optgroup,textarea,select {
+			-webkit-appearance: none;/* 去掉webkit默认表单背景 */
+			-webkit-tap-highlight-color: rgba(0,0,0,0);/* 去掉点击时的蓝色边框和灰色半透明背景 */
+			border: 0;
+			outline: none;
+		}
+
+		input::-webkit-input-placeholder {
+			color: #999;/* 修改input中的placeholder默认颜色 */
+		}
+
+		input:focus::-webkit-input-placeholder {
+			color: #333;/* 修改input处于focus时的默认颜色 */
+		}
+
+		input::-webkit-input-speech-button {
+			display: none;/* 隐藏Adriod的语音输入按钮 */
+		}
+
+		a,a:hover {
+			text-decoration: none;
+		}
+		
+		ul,dl,ol {
+			list-style: none;
+		}
+
+		h1,h2,h3,h4,h5,h6 {
+			font-size: 100%;
+			font-weight: normal;
+		}
+		body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{margin:0;padding:0}
+
+		*,*:after,*:before {
+			box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+		}
+
+		i {
+			font-style: normal;
+		}
+
+	</style>
+	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/swiper.min.css">
+</head>
+<body>
+	<header>
+		<!-- 头部 -->
+		<div class="header-wrap">
+			<div class="search-placeholder">
+				<span>寻找宝贝店铺</span>
+			</div>
+		</div>
+		<!-- /头部 -->
+	</header>
+	<div class="layout">
+		<div id="open-mobile" class="flex-row">
+			<!-- 提示打开手机淘宝-->
+			<a class="close">
+				<span class="icon-font">&#xe6b6;</span>
+			</a>
+			<a class="open flex-row">
+				<i class="icon-font">&#xe683;</i>
+				<section class="open-tip">
+					<p>打开手机淘宝App</p>
+					<p>随时随地 想淘就淘</p>
+				</section>
+				<button class="open-now">立即打开</button>
+			</a>
+			<!-- /提示打开手机淘宝-->
+		</div>
+		<div class="wrap">
+			<div class="content">
+				<!-- 内容 -->
+				<section>
+					
+					<!-- 轮播图 -->
+					<div class="banner">
+						<div class="swiper-container">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide">
+									<a href="">
+										<img class="swiper-lazy" src="./images/banner/banner1.jpg" alt="pic" />
+									</a>
+								</div>
+								<div class="swiper-slide">
+									<a href="">
+										<img class="swiper-lazy" data-src="./images/banner/banner2.jpg" alt="pic" />
+										<div class="swiper-lazy-preloader"></div>
+									</a>	
+								</div>
+								<div class="swiper-slide">
+									<a href="">
+										<img class="swiper-lazy" data-src="./images/banner/banner3.jpg" alt="pic" />
+										<div class="swiper-lazy-preloader"></div>
+									</a>	
+								</div>
+								<div class="swiper-slide">
+									<a href="">
+										<img class="swiper-lazy" data-src="./images/banner/banner4.jpg" alt="pic" />
+										<div class="swiper-lazy-preloader"></div>
+									</a>	
+								</div>
+								<div class="swiper-slide">
+									<a href="">
+										<img class="swiper-lazy" data-src="./images/banner/banner5.jpg" alt="pic" />
+										<div class="swiper-lazy-preloader"></div>
+									</a>	
+								</div>
+								<div class="swiper-slide">
+									<a href="">
+										<img class="swiper-lazy" data-src="./images/banner/banner6.jpg" alt="pic" />
+										<div class="swiper-lazy-preloader"></div>
+									</a>	
+								</div>
+								<div class="swiper-slide">
+									<a href="">
+										<img class="swiper-lazy" data-src="./images/banner/banner7.jpg" alt="pic" />
+										<div class="swiper-lazy-preloader"></div>
+									</a>	
+								</div>
+								<div class="swiper-slide">
+									<a href="">
+										<img class="swiper-lazy" data-src="./images/banner/banner8.jpg" alt="pic" />
+										<div class="swiper-lazy-preloader"></div>
+									</a>	
+								</div>
+							</div>
+							<!-- 分页器 -->
+							<div class="swiper-pagination"></div>
+						</div>
+					</div>
+					<!-- /轮播图 -->
+
+					<nav>
+					<!-- 导航栏 -->
+						<ul class="nav-line flex-row">
+							<li class="nav-item">
+								<div class="icon"></div>
+								<p>天猫</p>
+							</li>
+							<li class="nav-item">
+								<div class="icon"></div>
+								<p>聚划算</p>
+							</li>
+							<li class="nav-item">
+								<div class="icon"></div>
+								<p>天猫国际</p>
+							</li>
+							<li class="nav-item">
+								<div class="icon"></div>
+								<p>外卖</p>
+							</li>
+							<li class="nav-item">
+								<div class="icon"></div>
+								<p>天猫超市</p>
+							</li>
+						</ul>
+						<ul class="nav-line flex-row">
+							<li class="nav-item">
+								<div class="icon"></div>
+								<p>天猫</p>
+							</li>
+							<li class="nav-item">
+								<div class="icon"></div>
+								<p>聚划算</p>
+							</li>
+							<li class="nav-item">
+								<div class="icon"></div>
+								<p>天猫国际</p>
+							</li>
+							<li class="nav-item">
+								<div class="icon"></div>
+								<p>外卖</p>
+							</li>
+							<li class="nav-item">
+								<div class="icon"></div>
+								<p>天猫超市</p>
+							</li>
+						</ul>
+					<!-- /导航栏 -->
+					</nav>
+
+					<div class="top flex-row">
+						<!-- 淘宝头条 -->
+						<span class="topic"></span>
+						<ul class="top-list">
+							<li>
+								<span class="tag">特惠</span>
+								<span>海外药妆直邮，狂抢3天！</span>
+							</li>
+							<li>
+								<span class="tag">热门</span>
+								<span>土豪撒钱，400万仅此一天！</span>
+							</li>
+							<li>
+								<span class="tag">疯抢</span>
+								<span>血拼！100万份爆款9元抢</span>
+							</li>
+							<li>
+								<span class="tag">旅行</span>
+								<span>爽翻！999元开战斗机！</span>
+							</li>
+						</ul>
+						<!-- /淘宝头条 -->
+					</div>
+					
+					<div class="shop shop1 flex-row">
+						<!-- 淘抢购 -->
+						<div class="left">
+							<!-- 倒计时 -->
+							<div class="time">
+								<span class="hour">00</span>
+								<i>:</i>
+								<span class="minute">00</span>
+								<i>:</i>
+								<span class="second">00</span>
+							</div>
+							<!-- /倒计时 -->
+							<div class="img-link" data-href=""></div>
+						</div>
+						
+						<div class="right">
+							<div class="up flex-row">
+								<div class="r-item"></div>
+								<div class="r-item"></div>
+							</div>
+							<div class="down flex-row">
+								<div class="r-item"></div>
+								<div class="r-item"></div>
+							</div>
+						</div>
+						<!-- /淘抢购 -->
+					</div>
+					
+					<div class="shop shop2">
+						<!-- 超实惠 -->
+						<h2 class="head">
+							<span></span>
+							<span>超实惠</span>
+						</h2>
+						<div class="s-floor flex-row">
+							<div class="big-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+						</div>
+						<div class="s-floor flex-row">
+							<div class="big-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+						</div>
+						<!-- /超实惠 -->
+					</div>
+
+					<div class="shop shop3">
+						<!-- 天猫必逛 -->
+						<h2 class="head">
+							<span></span>
+							<span>天猫必逛</span>
+						</h2>
+						<div class="s-floor flex-row">
+							<div class="img-link"></div>
+							<div class="line"></div>
+							<div class="img-link"></div>
+						</div>
+						<div class="s-floor flex-row">
+							<div class="img-link"></div>
+							<div class="line"></div>
+							<div class="img-link"></div>
+							<div class="line"></div>
+							<div class="img-link"></div>
+							<div class="line"></div>
+							<div class="img-link"></div>
+						</div>
+						<!-- /天猫必逛 -->
+					</div>
+
+					<div class="shop shop4">
+						<!-- 特色好物 -->
+						<h2 class="head">
+							<span></span>
+							<span>特色好物</span>
+						</h2>
+						<div class="s-floor flex-row">
+							<div class="big-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+						</div>
+						<div class="s-floor flex-row">
+							<div class="big-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+							<div class="line"></div>
+							<div class="small-item"></div>
+						</div>
+						<!-- /特色好物 -->
+					</div>
+
+					<div class="service">
+						<div class="head flex-row">
+							<span class="left"></span>
+							<span class="more">更多服务 <i>></i></span>
+						</div>
+						<div class="img-link"></div>
+					</div>
+
+					<div class="good-shop">
+						<!-- 每日好店 -->
+						<div class="head flex-row">
+							<span class="left">每日好店</span>
+							<span class="more">更多<i>></i></span>
+						</div>
+						<div class="content flex-row">
+							<div class="gs-item">
+								<div class="up flex-row">
+									<div class="big"></div>
+									<div class="small">
+										<div class="si s1"></div>
+										<div class="si s2"></div>
+									</div>
+								</div>
+								<p>今日推荐</p>
+							</div>
+							<div class="gs-item">
+								<div class="up flex-row">
+									<div class="big"></div>
+									<div class="small">
+										<div class="si s1"></div>
+										<div class="si s2"></div>
+									</div>
+								</div>
+								<p>包包控</p>
+							</div>
+						</div>
+						<!-- /每日好店 -->
+					</div>
+
+					<div class="guess">
+						<!-- 猜你喜欢 -->
+						<div class="head">
+							<h2><span></span>猜你喜欢</h2>
+							<p>实时推荐最适合你的宝贝</p>
+						</div>
+						<div class="lists">
+							<ul>
+								<li>
+									<div class="item">
+										<div class="img"></div>
+										<p class="title">[为你推荐]包邮 优质 榉木大床刷 防静电 沙发地毯除尘刷 长柄</p>
+										<p class="price">￥25.0</p>
+									</div>
+								</li>
+								<li>
+									<div class="item">
+										<div class="img"></div>
+										<p class="title">[为你推荐]包邮 优质 榉木大床刷 防静电 沙发地毯除尘刷 长柄</p>
+										<p class="price">￥25.0</p>
+									</div>
+								</li>
+								<li>
+									<div class="item">
+										<div class="img"></div>
+										<p class="title">[为你推荐]包邮 优质 榉木大床刷 防静电 沙发地毯除尘刷 长柄</p>
+										<p class="price">￥25.0</p>
+									</div>
+								</li>
+								<li>
+									<div class="item">
+										<div class="img"></div>
+										<p class="title">[为你推荐]包邮 优质 榉木大床刷 防静电 沙发地毯除尘刷 长柄</p>
+										<p class="price">￥25.0</p>
+									</div>
+								</li>
+								<li>
+									<div class="item">
+										<div class="img"></div>
+										<p class="title">[为你推荐]包邮 优质 榉木大床刷 防静电 沙发地毯除尘刷 长柄</p>
+										<p class="price">￥25.0</p>
+									</div>
+								</li>
+								<li>
+									<div class="item">
+										<div class="img"></div>
+										<p class="title">[为你推荐]包邮 优质 榉木大床刷 防静电 沙发地毯除尘刷 长柄</p>
+										<p class="price">￥25.0</p>
+									</div>
+								</li>
+								<li>
+									<div class="item">
+										<div class="img"></div>
+										<p class="title">[为你推荐]包邮 优质 榉木大床刷 防静电 沙发地毯除尘刷 长柄</p>
+										<p class="price">￥25.0</p>
+									</div>
+								</li>
+								<li>
+									<div class="item">
+										<div class="img"></div>
+										<p class="title">[为你推荐]包邮 优质 榉木大床刷 防静电 沙发地毯除尘刷 长柄</p>
+										<p class="price">￥25.0</p>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<!-- /猜你喜欢 -->
+					</div>
+
+					<footer>
+						<!-- 底部 -->
+						<div class="buttons">
+							<a href="">登录</a>
+							<a href="">注册</a>
+							<a href="">电脑版</a>
+							<a href="">用户反馈</a>
+						</div>
+						<p class="copyright">2016 浙 B2-20080224 <a>服务中心</a></p>
+						<!-- /底部 -->
+					</footer>
+
+				</section>
+				<!-- /内容 -->
+			</div>
+			
+		</div>
+	</div>
+	<div class="to-top">
+		<span class="icon-font">&#xe64a;</span>
+		顶部
+	</div>
+	<div class="tab">
+		<!-- 底部tab -->
+		<a href="" class="home">
+			<span class="icon-font">&#xe9bb;</span>
+			<p>首页</p>
+		</a>
+		<a href="" class="delivery">
+			<span class="icon-font">&#xe62f;</span>
+			<p>物流</p>
+		</a>
+		<a href="" class="cart">
+			<span class="icon-font">&#xe605;</span>
+			<p>购物车</p>
+		</a>
+		<a href="" class="my">
+			<span class="icon-font">&#xe635;</span>
+			<p>我的淘宝</p>
+		</a>
+		<a href="" class="more">
+			<span class="icon-font">&#xe680;</span>
+			<p>更多</p>
+		</a>
+		<!-- /底部tab -->
+	</div>
+	<script src="./js/vendor/swiper.min.js"></script>
+	<script src="./js/main.js"></script>
+</body>
+</html>
