@@ -93,7 +93,7 @@ gulp.task("copyFont", function() {
 
 //------------------------------copy and mini js----------------------------------
 gulp.task("minjs", function() {
-	gulp.src("src/js*/vendor*/swiper.min.js")
+	gulp.src("src/js*/vendor*/**")
 		.pipe(gulp.dest("dist"));
 	return gulp.src(["src/js/*.js","!src/js/vendor/**"])
 			   .pipe(webpack(require("./webpack.config.js")))
